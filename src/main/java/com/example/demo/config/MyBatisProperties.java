@@ -4,21 +4,19 @@
  * <p>Copyright: Copyright (c) 2017</p>
  * <p>Company: www.zto.com</p>
  */
-package com.example.demo;
+package com.example.demo.config;
 
-import org.springframework.beans.factory.annotation.Value;
-
+import com.example.demo.config.annotation.NestedAttribute;
 
 public class MyBatisProperties {
     private String name;
-
-    @Value("${mybatis.config.slave.slaveJdbcUrl}")
-    private String slaveJdbcUrl;
-
     private String jdbcUrl;
     private String username;
     private String password;
 
+    private String slaveJdbcUrl;
+
+    @NestedAttribute
     private SlaveProperties slave;
 
     public String getName() {

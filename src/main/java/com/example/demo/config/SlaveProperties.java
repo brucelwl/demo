@@ -1,10 +1,13 @@
-package com.example.demo;
+package com.example.demo.config;
+
+import com.example.demo.config.annotation.AttributeKey;
 
 /**
  * Created by bruce on 2019/6/3 19:26
  */
 public class SlaveProperties {
 
+    @AttributeKey("${mybatis.config.slaveJdbcUrl}")
     private String slaveJdbcUrl;
     private String slaveUserName;
     private String slavePassword;
