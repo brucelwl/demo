@@ -18,7 +18,7 @@ public class MyDataSourceProperties {
     private Integer minimumIdle;
     private String dataSourceClassName;
     private String validationQuery;
-    private String connectionInitSql; //连接初始化sql
+    private String connectionInitSql;
     private Long leakDetectionThreshold;
 
     private MyDataSourceProperties slave; //slave config
