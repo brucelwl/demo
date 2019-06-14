@@ -1,29 +1,19 @@
 package com.example.demo.config;
 
-import com.example.demo.bind.MyBindHandler;
-import com.example.demo.bind.MyBinder;
-import com.example.demo.config.annotation.AttributeKey;
-import com.example.demo.config.annotation.NestedAttribute;
-import com.example.demo.util.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.context.properties.bind.BindContext;
-import org.springframework.boot.context.properties.bind.BindHandler;
-import org.springframework.boot.context.properties.bind.BindResult;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
-import org.springframework.boot.context.properties.source.ConfigurationPropertyName;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ReflectionUtils;
+import org.springframework.util.Assert;
 
 import javax.annotation.PostConstruct;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 /**
- * Created by bruce on 2019/6/3 22:08
+ * Created by bruce on 2019/6/15 00:20
  */
 @Component
 public class BinderConfig implements EnvironmentAware {
@@ -40,50 +30,25 @@ public class BinderConfig implements EnvironmentAware {
      */
     @PostConstruct
     public void binderTest() {
-        Binder binder = Binder.get(environment);
-        BindResult<MyBatisProperties> bindResult = binder.bind("mybatis.config", Bindable.of(MyBatisProperties.class), new BindHandler() {
-            @Override
-            public <T> Bindable<T> onStart(ConfigurationPropertyName name, Bindable<T> target, BindContext context) {
-                AttributeKey key = target.getAnnotation(AttributeKey.class);
-                if (key != null) {
-                    Field stringField = ReflectionUtils.findField(name.getClass(), "string");
-                    ReflectionUtils.makeAccessible(stringField);
-                    ReflectionUtils.setField(stringField, name, key.value());
-                }
-                return target;
-            }
-        });
+        ShardingProperties sharding = Binder.get(environment).bind("sharding", ShardingProperties.class).orElse(null);
 
-        logger.info(JsonUtil.toJson(bindResult.get()));
+        List<MyDataSourceProperties> myDataSourceProperties = Binder.get(environment).bind("sharding.data-sources", Bindable.listOf(MyDataSourceProperties.class)).orElse(null);
+
+        try {
+            Assert.notNull(sharding.getDataSources().get(0).getSlave(), "why slave is null !!!");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Assert.notNull(myDataSourceProperties.get(0).getSlave(), "Nesting of the same entity class is not supported !!!" +
+                    " please see class of com.example.demo.config.MyDataSourceProperties");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 
-    /**
-     * test2 MyBinder
-     */
-    @PostConstruct
-    public void MyBinderTest() {
-        com.example.demo.bind.BindResult<MyBatisProperties> bind = MyBinder.get(environment)
-                .bind("mybatis.config", Bindable.of(MyBatisProperties.class), new MyBindHandler() {
-                    @Override
-                    public Object onFinish(ConfigurationPropertyName name, Bindable<?> target, com.example.demo.bind.BindContext context, Object result) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-                        AttributeKey key = target.getAnnotation(AttributeKey.class);
-                        if (key != null) {
-                            try {
-                                return environment.resolveRequiredPlaceholders(key.value());
-                            } catch (IllegalArgumentException a) {
-                                return result;
-                            }
-                        }
-                        return result;
-                    }
-
-                    @Override
-                    public boolean onNoDescendSkip(ConfigurationPropertyName name, Bindable<?> target, com.example.demo.bind.BindContext context) {
-                        return target.getAnnotation(NestedAttribute.class) == null;
-                    }
-                });
-
-        logger.info(JsonUtil.toJson(bind.get()));
-    }
 
 }
