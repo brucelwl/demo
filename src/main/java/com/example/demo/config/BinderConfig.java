@@ -1,5 +1,6 @@
 package com.example.demo.config;
 
+import com.example.demo.bind.MyBinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.bind.Bindable;
@@ -46,6 +47,27 @@ public class BinderConfig implements EnvironmentAware {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+
+        MyDataSourceProperties shardingProperties = Binder.get(environment).bind("sharding.data-sources[0]", MyDataSourceProperties.class).orElse(null);
+
+        MyDataSourceProperties slave = shardingProperties.getSlave();
+
+        System.out.println(slave == null);
+
+
+        MyDataSourceProperties myDataSourceProperties1 = MyBinder.get(environment)
+                .bind("sharding.data-sources[0]", Bindable.of(MyDataSourceProperties.class), null, true)
+                .orElse(null);
+
+        System.out.println(myDataSourceProperties1.getSlave() != null);
+
+
+        ShardingProperties sharding1 = MyBinder.get(environment)
+                .bind("sharding", Bindable.of(ShardingProperties.class), null, true)
+                .orElse(null);
+
+        System.out.println(sharding1.getDataSources().get(0).getSlave() != null);
 
 
     }
