@@ -11,10 +11,24 @@ import org.springframework.stereotype.Component;
 @Component
 public class Bean1 {
 
-    public Bean1(){
+    public Bean1() {
         System.out.println("Bean1 create");
     }
 
+    public Bean1(String params) {
+        System.out.println("Bean1 create:" + params);
+    }
 
+    public String say(){
+        return "hello world";
+    }
+
+    public int add(int a,int b){
+        return a + b;
+    }
+
+    public int addObj(Integer a,Integer b){
+        return a + b;
+    }
 
 }

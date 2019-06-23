@@ -17,6 +17,9 @@ public abstract class Bean3 {
     public abstract Bean1 getBean1();
 
     @Lookup
+    public abstract Bean1 getBean1(String aa);
+
+    @Lookup
     public Bean2 getBean2() {
         return null;
     }

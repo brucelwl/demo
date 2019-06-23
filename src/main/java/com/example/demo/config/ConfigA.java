@@ -26,7 +26,8 @@ public class ConfigA {
         System.out.println(bean4);
 
         System.out.println(bean3.getBean1());
-        System.out.println(bean3.getBean1());
+        System.out.println(bean3.getBean1("aaa"));
+        System.out.println(bean3.getBean1("bbb"));
         System.out.println(bean3.getBean2());
         System.out.println(bean3.getBean2());
 
