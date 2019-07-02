@@ -8,9 +8,9 @@ import org.springframework.context.annotation.Configuration;
  */
 @ConditionalOnBean(ConfigC.class)
 @Configuration
-public class ConfigB  {
+public class ConfigB {
 
-    public ConfigB(){
+    public ConfigB() {
         System.out.println("ConfigB create");
     }
 

@@ -10,11 +10,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ConfigC {
 
-    public ConfigC(){
-
+    public ConfigC() {
         System.out.println("ConfigC create");
-
     }
-
 
 }

@@ -12,5 +12,4 @@ public class ConfigA {
         System.out.println("ConfigA create");
     }
 
-
 }

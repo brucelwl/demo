@@ -1,0 +1,8 @@
+# Auto Configure
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.example.demo.config.ConfigA,\
+com.example.demo.config.ConfigB,\
+com.example.demo.config.ConfigC
+
+org.springframework.context.ApplicationListener=\
+com.example.demo.config.MyApplicationEventListener
