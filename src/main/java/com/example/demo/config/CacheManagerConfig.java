@@ -44,7 +44,7 @@ public class CacheManagerConfig implements EnvironmentAware {
     public void setEnvironment(Environment environment) {
 
 
-        String aaaa = environment.getProperty("aaaa");
+        String aaaa = environment.getProperty("user.password");
 
 
     }
