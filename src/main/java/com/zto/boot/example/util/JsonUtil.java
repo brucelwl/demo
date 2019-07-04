@@ -1,4 +1,4 @@
-package com.example.demo.util;
+package com.zto.boot.example.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

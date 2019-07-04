@@ -1,6 +1,6 @@
-package com.example.demo.controller;
+package com.zto.boot.example.controller;
 
-import com.example.demo.service.UserService;
+import com.zto.boot.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 

@@ -1,4 +1,4 @@
-package com.example.demo.config;
+package com.zto.boot.example.config;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

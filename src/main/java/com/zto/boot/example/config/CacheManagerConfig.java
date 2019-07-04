@@ -1,4 +1,4 @@
-package com.example.demo.config;
+package com.zto.boot.example.config;
 
 import org.springframework.cache.Cache;
 import org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean;
