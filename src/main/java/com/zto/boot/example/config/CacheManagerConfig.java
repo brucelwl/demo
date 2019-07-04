@@ -23,14 +23,12 @@ public class CacheManagerConfig implements EnvironmentAware {
         return simpleCacheManager;
     }
 
-
     @Bean
     public ConcurrentMapCacheFactoryBean stockDetail(){
         ConcurrentMapCacheFactoryBean cacheFactoryBean = new ConcurrentMapCacheFactoryBean();
         cacheFactoryBean.setName("stockDetail");
         return cacheFactoryBean;
     }
-
 
     @Bean
     public ConcurrentMapCacheFactoryBean detailMsg(){
@@ -39,13 +37,10 @@ public class CacheManagerConfig implements EnvironmentAware {
         return cacheFactoryBean;
     }
 
-
     @Override
     public void setEnvironment(Environment environment) {
 
-
         String aaaa = environment.getProperty("user.password");
-
 
     }
 }

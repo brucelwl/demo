@@ -1,5 +1,6 @@
 package com.zto.boot.example.initializer;
 
+import com.zto.boot.example.listener.MyApplicationEventListener4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContextInitializer;
@@ -12,21 +13,26 @@ import org.springframework.core.env.Environment;
 
 /**
  * <pre>
- * 1 自定义ApplicationContextInitializer,不要加注解@Component及其子类注解,例如@Configuration
- * 否则将会创建两次实例对象,并且通过注解创建的实例的initialize(...)方法也不会被调用
  *
- * 2 只需要在 spring.factories 中使用如下方式配置
+ * 1 通过 spring.factories 方式配置Initializer
  * org.springframework.context.ApplicationContextInitializer=\
  * com.zto.boot.example.initializer.MyApplicationContextInitializer
  *
- * 3 通过spring.factories文件自动配置的ApplicationContextInitializer不会被放到SpringIOC中
- *
- * 4 也可以在配置文件中通过属性context.initializer.classes指定,会由org.springframework.boot.context.config.DelegatingApplicationContextInitializer
+ * 2 也可以在配置文件中通过属性context.initializer.classes指定,会由org.springframework.boot.context.config.DelegatingApplicationContextInitializer
  * 在执行initialize(applicationContext)方法时读取,并反射实例化,然后执行initialize(applicationContext)方法,同样不会被放到IOC
  *
- * 5 条件注解无效,只能程序中自己编码判断
+ * <b>注意点:<b/>
  *
- * 6 可排序
+ * 1 自定义ApplicationContextInitializer,不要加@Component及其子类注解,例如@Configuration
+ * 否则将会创建两次实例对象,并且通过注解创建的实例的initialize(...)方法也不会被调用
+ *
+ * 2 以上两种自动配置的ApplicationContextInitializer不会被放到SpringIOC中,也只有这两种方式
+ *
+ * 3 条件注解无效,只能程序中自己编码判断
+ *
+ * 4 可排序
+ *
+ * 5 不支持Aware接口
  *
  * </pre>
  * Created by bruce on 2019/7/3 16:25
@@ -59,12 +65,7 @@ public class MyApplicationContextInitializer implements ApplicationContextInitia
         //因此这种方式添加的监听器只能监听:org.springframework.context.event.ContextRefreshedEvent 以及之后的事件如下:
         //ContextRefreshedEvent,ServletWebServerInitializedEvent,ApplicationStartedEvent,ApplicationReadyEvent
 
-        applicationContext.addApplicationListener(new ApplicationListener<ApplicationEvent>() {
-            @Override
-            public void onApplicationEvent(ApplicationEvent event) {
-                //logger.info("通过ApplicationContextInitializer添加监听器,监听到事件:" + event.getClass().getName());
-            }
-        });
+        applicationContext.addApplicationListener(new MyApplicationEventListener4());
 
         //能否在initialize(...)方法中通过applicationContext获取广播器实例,直接将事件监听器添加到里面 ?
         //不能,这个时候applicationContext对象刚创建,原因:

@@ -1,8 +1,13 @@
 # Auto Configure
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.zto.boot.example.config.ConfigA,\
-com.zto.boot.example.config.ConfigB,\
-com.zto.boot.example.config.ConfigC
+com.zto.boot.example.config.demo1.ConfigA,\
+com.zto.boot.example.config.demo1.ConfigB,\
+com.zto.boot.example.config.demo1.ConfigC
+
+# Run Listeners
+org.springframework.boot.SpringApplicationRunListener=\
+com.zto.boot.example.listener.MySpringBootAppRunListener
+
 
 org.springframework.context.ApplicationListener=\
 com.zto.boot.example.listener.MyApplicationEventListener

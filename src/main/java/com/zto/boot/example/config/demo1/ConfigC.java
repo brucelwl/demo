@@ -1,4 +1,4 @@
-package com.zto.boot.example.config;
+package com.zto.boot.example.config.demo1;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Configuration;
