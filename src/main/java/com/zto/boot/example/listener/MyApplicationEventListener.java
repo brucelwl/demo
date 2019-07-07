@@ -86,9 +86,9 @@ public class MyApplicationEventListener implements ApplicationListener<Applicati
     }
 
     private void logPrint(String mesg) {
-        System.out.println(LocalDateTime.now().toString()
-                + String.format("%-29s", "  sout") + Thread.currentThread().getName() + "} "
-                + String.format("%-40s", MyApplicationEventListener.class.getSimpleName()) + " : " + mesg);
+        //System.out.println(LocalDateTime.now().toString()
+        //        + String.format("%-29s", "  sout") + Thread.currentThread().getName() + "} "
+        //        + String.format("%-40s", MyApplicationEventListener.class.getSimpleName()) + " : " + mesg);
     }
 
 

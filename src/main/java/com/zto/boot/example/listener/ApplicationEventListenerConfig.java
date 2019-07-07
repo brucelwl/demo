@@ -1,6 +1,8 @@
 package com.zto.boot.example.listener;
 
+import com.zto.boot.example.service.UserService3;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
@@ -11,6 +13,7 @@ import org.springframework.context.event.EventListener;
 
 /**
  * org.springframework.context.annotation.ConfigurationClassEnhancer
+ * 验证@Configuration和@Component之间的区别
  *
  * <p>
  * <pre>
@@ -32,6 +35,9 @@ public class ApplicationEventListenerConfig {
     //public void myAppMethodEventListener1() {
     //    log.info("myApplicationEventListener1");
     //}
+
+    @Autowired
+    public UserService3 userService3;
 
     @EventListener
     public void myAppMethodEventListener1(ApplicationEvent event) {
@@ -55,6 +61,7 @@ public class ApplicationEventListenerConfig {
         return new MyCustomEventListener();
     }
 
+    //验证@Configuration和@Component之间的区别
     //@Bean
     //public ConfigA newConfigA() {
     //    log.info("newConfigA 被调用");
