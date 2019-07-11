@@ -8,6 +8,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScans;
 
+import java.util.Properties;
+
 /**
  * ConfigurationWarningsApplicationContextInitializer
  * 用于验证设置的包名是否包含org.springframework和org,如果包含则输出警告日志
@@ -44,6 +46,8 @@ public class DemoApplication {
         UserService3 userService3 = context.getBean(UserService3.class);
         log.info(userService3.findUsername());
         log.info(userService3.getPassword());
+
+        Properties properties = System.getProperties();
 
     }
 

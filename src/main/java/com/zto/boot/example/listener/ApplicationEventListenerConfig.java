@@ -1,5 +1,6 @@
 package com.zto.boot.example.listener;
 
+import com.zto.boot.example.config.demo1.ConfigA;
 import com.zto.boot.example.service.UserService3;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Component;
 
 /**
  * org.springframework.context.annotation.ConfigurationClassEnhancer
@@ -27,7 +29,8 @@ import org.springframework.context.event.EventListener;
  */
 @Slf4j
 @Configuration
-@ConditionalOnProperty(name = "enable.custom.eventListener", havingValue = "true")
+//@Component
+//@ConditionalOnProperty(name = "enable.custom.eventListener", havingValue = "true")
 public class ApplicationEventListenerConfig {
 
     //IllegalStateException Event parameter is mandatory for event listener method:
@@ -62,21 +65,21 @@ public class ApplicationEventListenerConfig {
     }
 
     //验证@Configuration和@Component之间的区别
-    //@Bean
-    //public ConfigA newConfigA() {
-    //    log.info("newConfigA 被调用");
-    //    return new ConfigA();
-    //}
-    //
-    //@Bean
-    //public ConfigA configAaaa() {
-    //    return newConfigA();
-    //}
-    //
-    //@Bean
-    //public ConfigA configAaa() {
-    //    return newConfigA();
-    //}
+    @Bean
+    public ConfigA newConfigA() {
+        log.info("newConfigA 被调用");
+        return new ConfigA();
+    }
+
+    @Bean
+    public ConfigA configAaaa() {
+        return newConfigA();
+    }
+
+    @Bean
+    public ConfigA configAaa() {
+        return newConfigA();
+    }
 
 
 }

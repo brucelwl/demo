@@ -2,10 +2,15 @@ package com.zto.boot.example.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.config.SingletonBeanRegistry;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +25,12 @@ public class UserService implements ApplicationContextAware {
 
     @Autowired
     private UserService3 userService3;
+
+    @Autowired
+    private UserService3 UserService4;
+
+    @Autowired
+    private UserService3 UserService5;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -44,14 +55,19 @@ public class UserService implements ApplicationContextAware {
             //当调用DefaultListableBeanFactory的preInstantiateSingletons()方法时会调用getBean(...)完成所有非懒加载的Bean的实例化
             //会先判断父类DefaultSingletonBeanRegistry中是否有这个Bean对象,当发现有userService2这个bean,导致注解的UserService2不会被实例化
 
-            //UserService2 singletonObject = new UserService2();
-            //singletonObject.setId("hahah");
-            //ConfigurableApplicationContext appContext = (ConfigurableApplicationContext) applicationContext;
-            //appContext.getBeanFactory().registerSingleton("userService2", singletonObject);
-            //
+            UserService2 singletonObject = new UserService2();
+            ConfigurableApplicationContext appContext = (ConfigurableApplicationContext) applicationContext;
+            appContext.getBeanFactory().registerSingleton("userService2", singletonObject);
+
             //Object userService2 = appContext.getBeanFactory().getBean("userService2");
             //
             //UserService2 bean = applicationContext.getBean(UserService2.class);
+
+
+
+            //BeanFactory beanFactory = applicationContext.getAutowireCapableBeanFactory();
+            //BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
+            //((BeanDefinitionRegistry) beanFactory).registerBeanDefinition(, );
 
         }
 
