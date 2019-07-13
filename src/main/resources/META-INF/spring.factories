@@ -10,7 +10,8 @@ com.zto.boot.example.listener.MySpringBootAppRunListener
 
 
 org.springframework.context.ApplicationListener=\
-com.zto.boot.example.listener.MyApplicationEventListener
+com.zto.boot.example.listener.MyApplicationEventListener,\
+com.zto.boot.example.listener.MyApplicationEventListener5
 
 
 org.springframework.context.ApplicationContextInitializer=\
