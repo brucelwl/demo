@@ -1,0 +1,27 @@
+{
+  "groups": [
+    {
+      "name": "user.info",
+      "type": "com.example.demo.config.UserInfo",
+      "sourceType": "com.example.demo.config.UserInfo"
+    }
+  ],
+  "properties": [
+    {
+      "name": "user.info.addresses",
+      "type": "java.util.List<com.example.demo.config.Address>",
+      "sourceType": "com.example.demo.config.UserInfo"
+    },
+    {
+      "name": "user.info.password",
+      "type": "java.lang.String",
+      "sourceType": "com.example.demo.config.UserInfo"
+    },
+    {
+      "name": "user.info.user-name",
+      "type": "java.lang.String",
+      "sourceType": "com.example.demo.config.UserInfo"
+    }
+  ],
+  "hints": []
+}
