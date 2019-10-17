@@ -27,6 +27,9 @@ public class DemoApplication {
             System.out.println(address);
         }
 
+        //TomcatServletWebServerFactory tomcatServletWebServerFactory = new TomcatServletWebServerFactory();
+        //tomcatServletWebServerFactory.setProtocol(Http11AprProtocol.class.getName());
+
 
     }
 
