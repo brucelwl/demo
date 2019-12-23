@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DemoApplicationTests2 {
 
     @Test
-    public void contextLoads() {
+    public void contextLoads() throws IllegalAccessException, InstantiationException {
 
         ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
 
@@ -22,6 +22,14 @@ public class DemoApplicationTests2 {
 
         System.out.println(o);
         System.out.println(aaa);
+
+
+        //FooBar.FooBarConfig fooBarConfig = new FooBar.FooBarConfig();
+        //System.out.println(fooBarConfig);
+
+        FooBar.FooBarConfig fooBarConfig = FooBar.FooBarConfig.class.newInstance();
+
+
     }
 
 
