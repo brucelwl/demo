@@ -1,14 +1,9 @@
 package com.zto.boot.example;
 
-import com.zto.boot.example.service.UserService3;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.ComponentScans;
-
-import java.util.Properties;
 
 /**
  * ConfigurationWarningsApplicationContextInitializer
@@ -26,9 +21,6 @@ import java.util.Properties;
 //})
 public class DemoApplication {
 
-    //public DemoApplication() {
-    //    System.out.println("DemoApplication create");
-    //}
 
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(DemoApplication.class, args);
@@ -43,11 +35,13 @@ public class DemoApplication {
         //        .map(beanName -> String.format("%-50s", beanName) + context.getBean(beanName).getClass().getName())
         //        .forEach(System.out::println);
 
-        UserService3 userService3 = context.getBean(UserService3.class);
-        log.info(userService3.findUsername());
-        log.info(userService3.getPassword());
-
-        Properties properties = System.getProperties();
+        synchronized (DemoApplication.class) {
+            try {
+                DemoApplication.class.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 
