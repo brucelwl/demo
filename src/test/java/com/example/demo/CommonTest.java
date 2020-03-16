@@ -1,7 +1,9 @@
 package com.example.demo;
 
 import org.junit.Test;
-import org.springframework.boot.env.RandomValuePropertySource;
+
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.Semaphore;
 
 /**
  * Created by bruce on 2019/11/27 20:47
@@ -9,22 +11,28 @@ import org.springframework.boot.env.RandomValuePropertySource;
 public class CommonTest {
 
     @Test
-    public void test() {
-        RandomValuePropertySource propertySource = new RandomValuePropertySource("random");
+    public void test() throws InterruptedException, BrokenBarrierException {
 
-        System.out.println(propertySource.getProperty("random.int"));
-        System.out.println(propertySource.getProperty("random.long"));
-        System.out.println(propertySource.getProperty("random.uuid"));
+        Semaphore semaphore = new Semaphore(5);
 
-        System.out.println(propertySource.getProperty("random.int[0,10)"));
-        System.out.println(propertySource.getProperty("random.long[0,1000)"));
+        for (int i = 0; i < 10; i++) {
+            new Thread(() -> {
+                try {
+                    semaphore.acquire();
+                    System.out.println(Thread.currentThread().getName() + "获取到资源!");
 
-        //返回随机md5值,random.后面随便写
-        System.out.println(propertySource.getProperty("random.other"));
+                    Thread.sleep(1500);
 
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }finally {
+                    System.out.println(Thread.currentThread().getName() + "释放资源!");
+                    semaphore.release();
+                }
+            }).start();
+        }
 
-        
-
+        Thread.sleep(30000);
     }
 
 
