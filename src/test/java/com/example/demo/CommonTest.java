@@ -1,39 +1,24 @@
 package com.example.demo;
 
-import org.junit.Test;
-
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.Semaphore;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Created by bruce on 2019/11/27 20:47
  */
 public class CommonTest {
 
-    @Test
-    public void test() throws InterruptedException, BrokenBarrierException {
+    public static void main(String[] args) throws InterruptedException {
 
-        Semaphore semaphore = new Semaphore(5);
-
-        for (int i = 0; i < 10; i++) {
-            new Thread(() -> {
-                try {
-                    semaphore.acquire();
-                    System.out.println(Thread.currentThread().getName() + "获取到资源!");
-
-                    Thread.sleep(1500);
-
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }finally {
-                    System.out.println(Thread.currentThread().getName() + "释放资源!");
-                    semaphore.release();
-                }
-            }).start();
+        Map<String, Integer> accessMap = new LinkedHashMap<>(16, 0.75f, true);
+        accessMap.put("c", 100);
+        accessMap.put("d", 200);
+        accessMap.put("a", 500);
+        accessMap.get("c");
+        accessMap.put("d", 300);
+        for (Map.Entry<String, Integer> entry : accessMap.entrySet()) {
+            System.out.println(entry.getKey() + " " + entry.getValue());
         }
 
-        Thread.sleep(30000);
     }
-
-
 }
