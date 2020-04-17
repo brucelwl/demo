@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.tools;
 
 import java.io.Serializable;
 import java.util.function.Function;

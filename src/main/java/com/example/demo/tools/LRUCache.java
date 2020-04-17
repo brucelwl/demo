@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.tools;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -25,7 +25,7 @@ public class LRUCache<K, V> extends LinkedHashMap<K, V> {
     private int maxCacheSize;
 
     public LRUCache(int maxCacheSize) {
-        super(16, 0.75F, true);
+        super(maxCacheSize, 1F, true);
         this.maxCacheSize = maxCacheSize;
     }
 
