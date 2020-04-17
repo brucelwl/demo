@@ -42,8 +42,16 @@ public class Beans {
         public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
             if (method.getName().equals("addSampleProperty")) {
                 value = args[0];
-            } else if (method.getName().equals("getSampleProperty")) {
+            }
+            if (method.getName().equals("getSampleProperty")) {
                 return value;
+            }
+            if (method.getName().equals("hashCode")) {
+                return System.identityHashCode(obj);
+            }
+
+            if (method.getName().equals("toString")) {
+                return obj.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(obj));
             }
             return null;
         }

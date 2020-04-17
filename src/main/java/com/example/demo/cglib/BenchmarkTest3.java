@@ -1,5 +1,6 @@
 package com.example.demo.cglib;
 
+import com.example.demo.config.ConfigA;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Measurement;
@@ -35,26 +36,46 @@ public class BenchmarkTest3 {
 
     @Benchmark
     public void testObj1(Blackhole blackhole) throws Exception {
+
+        long start = System.currentTimeMillis();
         BeanI beanI = ProxyInvoke.create();
+        //System.out.println("jdk代理创建耗时:" + (System.currentTimeMillis() - start) + " " + beanI);
+
         beanI.addSampleProperty("testObj1");
         String sampleProperty = beanI.getSampleProperty();
-        blackhole.consume(sampleProperty);
+        //blackhole.consume(sampleProperty);
     }
 
     @Benchmark
     public void testObj2(Blackhole blackhole) throws Exception {
+        long start = System.currentTimeMillis();
         Bean proxyBean = Beans.newInstance(Bean.class);
+        //System.out.println("cglib代理创建耗时:" + (System.currentTimeMillis() - start) + " " + proxyBean);
+
         proxyBean.addSampleProperty("testObj2");
         String sampleProperty = proxyBean.getSampleProperty();
-        blackhole.consume(sampleProperty);
+        //blackhole.consume(sampleProperty);
     }
 
-    public static void main(String[] args) throws RunnerException, IOException {
+    public static void main(String[] args) throws Exception {
         Options options = new OptionsBuilder().include(BenchmarkTest3.class.getName())
                 //.output("benchmark/jedis-Throughput.log")
                 .forks(0)
                 .build();
         new Runner(options).run();
+
+        //System.out.println("aaaa");
+        //
+        //for (int i = 0; i < 10; i++) {
+        //    BenchmarkTest3 benchmarkTest3 = new BenchmarkTest3();
+        //    benchmarkTest3.testObj1(null);
+        //}
+        //
+        //for (int i = 0; i < 10; i++) {
+        //    BenchmarkTest3 benchmarkTest3 = new BenchmarkTest3();
+        //    benchmarkTest3.testObj2(null);
+        //}
+
 
     }
 

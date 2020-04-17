@@ -17,4 +17,9 @@ public abstract class Bean {
     public String toString() {
         return "sampleProperty:" + sampleProperty;
     }
+
+    @Override
+    public int hashCode() {
+        return 1110;
+    }
 }
