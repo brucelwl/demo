@@ -6,6 +6,7 @@ import org.springframework.util.ReflectionUtils;
 import java.beans.Introspector;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,6 +49,12 @@ public class ReflectionUtil {
 
             } else if (implMethodName.startsWith("is") && implMethodName.length() > 2) {
                 fieldName = Introspector.decapitalize(implMethodName.substring(2));
+
+            } else if (implMethodName.startsWith("lambda$")) {
+                throw new IllegalArgumentException("SerializableFunction不能传递lambda表达式,只能使用方法引用");
+
+            } else {
+                throw new IllegalArgumentException(implMethodName + "不是Getter方法引用");
             }
 
             String declaredClass = serializedLambda.getImplClass().replace("/", ".");
@@ -56,7 +63,7 @@ public class ReflectionUtil {
             //Spring 中的反射工具类
             field = ReflectionUtils.findField(aClass, fieldName);
 
-        } catch (Exception e) {
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         if (field != null) {
