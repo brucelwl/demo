@@ -25,7 +25,7 @@ public class ReflectionUtil {
     }
 
     /** 缓存方法引用对应的字段,避免每次反射获取 */
-    public static Field getField(SerializableFunction<?, ?> function) {
+    public static <T, R> Field getField(SerializableFunction<T, R> function) {
         return cache.computeIfAbsent(function, ReflectionUtil::findField);
     }
 
