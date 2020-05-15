@@ -14,8 +14,6 @@ public class EnvListener implements ApplicationListener<ApplicationEnvironmentPr
     @Override
     public void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {
 
-        AdapterConfigManager.loadAdapterPropertySource(event.getEnvironment());
-
         logger.info("EnvListener");
 
         logger.info("pid:{}", event.getEnvironment().getProperty("PID"));
