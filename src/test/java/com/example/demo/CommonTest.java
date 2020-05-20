@@ -292,4 +292,55 @@ public class CommonTest {
     }
 
 
+    /**
+     * https://www.jb51.net/article/91661.htm
+     */
+    @Test
+    public void test9(String ddd, String eee) {
+        String str = " ";
+        for (int i = 0; i < 100; i++) {
+            str = str + i + " ";
+        }
+    }
+
+    @Test
+    public void test10(String ddd, String eee) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < 100; i++) {
+            builder.append(i).append("  ");
+        }
+        builder.append("aaaa")
+                .append("bbbbb")
+                .append(eee)
+                .append("cccccc")
+                .append(ddd);
+        System.out.println(builder.toString());
+    }
+
+    @Test
+    public void test11(String ddd, String eee) {
+
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("aaaa")
+                .append("bbbbb")
+                .append(eee)
+                .append("cccccc")
+                .append(ddd);
+
+        System.out.println(builder.toString());
+    }
+
+    @Test
+    public void test12(String ddd, String eee) {
+
+        String builder = "aaaa"
+                + "bbbbb"
+                + eee
+                + "cccccc"
+                + ddd;
+
+        System.out.println(builder);
+    }
+
 }
