@@ -31,10 +31,16 @@ public class WebController {
         UserInfo userInfo = new UserInfo();
         userInfo.setNum(15.639);
         userInfo.setSalary(15112);
+        userInfo.setUserName("周杰伦");
 
         userInfo.setBrithDay(new Date());
 
         return userInfo;
+    }
+
+    @GetMapping("/str")
+    public String str(){
+        return "返回中文字符串abc123";
     }
 
 

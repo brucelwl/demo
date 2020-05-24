@@ -11,6 +11,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,17 +44,15 @@ public class MvcConfig implements WebMvcConfigurer {
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        ArrayList<HttpMessageConverter<?>> newConverters = new ArrayList<>(converters.size());
 
-        //MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
-        //
-        //ObjectMapper objectMapper = new ObjectMapper();
-        //
-        //objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm"));
-        //
-        //mappingJackson2HttpMessageConverter.setObjectMapper(objectMapper);
-        //
-        //converters.add(0, mappingJackson2HttpMessageConverter);
-
-        System.out.println();
+        //TODO 去除冗余的HttpMessageConverter
+        for (HttpMessageConverter<?> converter : converters) {
+            if (newConverters.stream().noneMatch(convert -> convert.getClass() == converter.getClass())){
+                newConverters.add(converter);
+            }
+        }
+        converters.clear();
+        converters.addAll(newConverters);
     }
 }
