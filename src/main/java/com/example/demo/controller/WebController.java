@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.config.UserInfo;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.format.annotation.NumberFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,10 +32,27 @@ public class WebController {
         UserInfo userInfo = new UserInfo();
         userInfo.setNum(15.639);
         userInfo.setSalary(15112);
-        userInfo.setUserName("周杰伦");
-
         userInfo.setBrithDay(new Date());
+        return userInfo;
+    }
 
+    @GetMapping("/user2")
+    public UserInfo userInfo2(String name) {
+        UserInfo userInfo = new UserInfo();
+        userInfo.setNum(15.639);
+        userInfo.setSalary(15112);
+        userInfo.setUserName(name);
+        userInfo.setBrithDay(new Date());
+        return userInfo;
+    }
+
+    @GetMapping("/user3")
+    public UserInfo userInfo3(UserInfo user) {
+        UserInfo userInfo = new UserInfo();
+        userInfo.setNum(user.getNum());
+        userInfo.setSalary(user.getSalary());
+        userInfo.setUserName(user.getUserName());
+        userInfo.setBrithDay(new Date());
         return userInfo;
     }
 
