@@ -4,14 +4,21 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.type.WritableTypeId;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JacksonStdImpl;
 import com.fasterxml.jackson.databind.cfg.SerializerFactoryConfig;
+import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
+import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
+import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
 import com.fasterxml.jackson.databind.ser.BeanSerializerFactory;
+import com.fasterxml.jackson.databind.ser.PropertyBuilder;
 import com.fasterxml.jackson.databind.ser.std.NumberSerializers;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 
 /**
  * Created by bruce on 2020/5/10 14:57
@@ -19,12 +26,29 @@ import java.io.IOException;
 public class MyBeanSerializerFactory extends BeanSerializerFactory {
     private static final long serialVersionUID = 8507702577778663260L;
 
+    private NumberSerializers.DoubleSerializer defDoubleSerializer;
+
     public MyBeanSerializerFactory(SerializerFactoryConfig config) {
         super(config);
 
         _concrete.put(Double.class.getName(), new DoubleSerializer(Double.class));
         _concrete.put(Double.TYPE.getName(), new DoubleSerializer(Double.TYPE));
 
+        defDoubleSerializer = new NumberSerializers.DoubleSerializer(Double.class);
+    }
+
+    @Override
+    protected BeanPropertyWriter _constructWriter(SerializerProvider prov, BeanPropertyDefinition propDef, PropertyBuilder pb, boolean staticTyping, AnnotatedMember accessor) throws JsonMappingException {
+
+        BeanPropertyWriter beanPropertyWriter = super._constructWriter(prov, propDef, pb, staticTyping, accessor);
+
+        JsonSerializer<Object> serializer = beanPropertyWriter.getSerializer();
+        if (serializer == null && propDef.getField().getAnnotation(UseDefaultJsonSer.class) != null) {
+            if (propDef.getRawPrimaryType() == double.class || propDef.getRawPrimaryType() == Double.class) {
+                beanPropertyWriter.assignSerializer(defDoubleSerializer);
+            }
+        }
+        return beanPropertyWriter;
     }
 
     @JacksonStdImpl

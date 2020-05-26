@@ -3,7 +3,9 @@ package com.example.demo.status;
 import com.example.demo.status.info.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.util.ClassUtils;
 
+import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 import java.lang.management.RuntimeMXBean;
@@ -14,6 +16,8 @@ import java.util.Map;
 @Setter
 @Getter
 public class SystemInfoCollector implements InfoCollector {
+
+    long MB = 1024 * 1024;
 
     private boolean m_dumpLocked;
 
@@ -52,6 +56,7 @@ public class SystemInfoCollector implements InfoCollector {
         RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
         //start time of the Java virtual machine in milliseconds.
         info.setStartTime(runtimeMXBean.getStartTime());
+        info.setStart(new Date(runtimeMXBean.getStartTime()));
 
         //uptime of the Java virtual machine in milliseconds.
         info.setUpTime(runtimeMXBean.getUptime());
@@ -69,6 +74,21 @@ public class SystemInfoCollector implements InfoCollector {
         return info;
     }
 
+    static boolean isSunOsMXBean = false;
+    static Class<?> sunOsMXBeanClass;
+
+    static {
+        try {
+            String sunOsMXBeanFullClass = "com.sun.management.OperatingSystemMXBean";
+            isSunOsMXBean = ClassUtils.isPresent(sunOsMXBeanFullClass, ClassUtils.getDefaultClassLoader());
+            if (isSunOsMXBean) {
+                sunOsMXBeanClass = Thread.currentThread().getContextClassLoader().loadClass(sunOsMXBeanFullClass);
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public OsInfo collectOs() {
         OsInfo osInfo = new OsInfo();
@@ -76,17 +96,72 @@ public class SystemInfoCollector implements InfoCollector {
         OperatingSystemMXBean osMXBean = ManagementFactory.getOperatingSystemMXBean();
 
         osInfo.setArch(osMXBean.getArch());
+        osInfo.setName(osMXBean.getName());
+        osInfo.setVersion(osMXBean.getVersion());
+        osInfo.setAvailableProcessors(osMXBean.getAvailableProcessors());
+        osInfo.setSystemLoadAverage(osMXBean.getSystemLoadAverage());
 
         Extension systemExtension = systemInfo.findOrCreateExtension("System");
-        systemExtension.findOrCreateExtensionDetail("LoadAverage").setValue(osMXBean.getSystemLoadAverage());
+        systemExtension.findOrCreateExtensionDetail("SystemLoadAverage").setValue(osMXBean.getSystemLoadAverage());
 
+        //for Sun JDK
+        if (isSunOsMXBean && sunOsMXBeanClass.isInstance(osMXBean)) {
+            com.sun.management.OperatingSystemMXBean sunOsMXBean = (com.sun.management.OperatingSystemMXBean) osMXBean;
 
+            long freePhysicalMemorySize = sunOsMXBean.getFreePhysicalMemorySize();
+            long freeSwapSpaceSize = sunOsMXBean.getFreeSwapSpaceSize();
+
+            osInfo.setTotalPhysicalMemory(sunOsMXBean.getTotalPhysicalMemorySize());
+            osInfo.setFreePhysicalMemory(freePhysicalMemorySize);
+
+            osInfo.setTotalSwapSpace(sunOsMXBean.getTotalSwapSpaceSize());
+            osInfo.setFreeSwapSpace(freeSwapSpaceSize);
+
+            osInfo.setCommittedVirtualMemory(sunOsMXBean.getCommittedVirtualMemorySize());
+
+            //当前Java进程CPU负载,jdk1.7新增的api
+            osInfo.setProcessCpuLoad(sunOsMXBean.getProcessCpuLoad());
+            osInfo.setProcessCpuTime(sunOsMXBean.getProcessCpuTime());
+
+            //系统CPU负载,jdk1.7新增的api
+            systemExtension.findOrCreateExtensionDetail("SystemLoadAverage").setValue(sunOsMXBean.getSystemCpuLoad());
+            systemExtension.findOrCreateExtensionDetail("FreePhysicalMemory").setValue(freePhysicalMemorySize);
+            systemExtension.findOrCreateExtensionDetail("FreeSwapSpaceSize").setValue(freeSwapSpaceSize);
+        }
         return osInfo;
     }
 
     @Override
     public DiskInfo collectDiskInfo() {
-        return null;
+        DiskInfo diskInfo = new DiskInfo("MB");
+
+        File[] roots = File.listRoots();
+        if (roots != null) {
+            for (File disk : roots) {
+                diskInfo.addDiskVolume(new DiskInfo.DiskVolumeInfo(disk.getAbsolutePath()));
+            }
+        }
+
+        File data = new File(m_dataPath);
+        if (data.exists()) {
+            diskInfo.addDiskVolume(new DiskInfo.DiskVolumeInfo(data.getAbsolutePath()));
+        }
+
+        List<DiskInfo.DiskVolumeInfo> diskVolumes = diskInfo.getDiskVolumes();
+        for (DiskInfo.DiskVolumeInfo diskVolume : diskVolumes) {
+            File volume = new File(diskVolume.getDiskId());
+
+            diskVolume.setTotal(volume.getTotalSpace() / MB);
+            diskVolume.setFree(volume.getFreeSpace() / MB);
+            diskVolume.setUsable(volume.getUsableSpace() / MB);
+
+            Extension diskExtension = systemInfo.findOrCreateExtension("Disk");
+            diskExtension.setDescription("Free");
+            Extension.ExtensionDetail extensionDetail = diskExtension.findOrCreateExtensionDetail(diskVolume.getDiskId() + " Free");
+            extensionDetail.setValue(volume.getFreeSpace() * 1.0 / MB);
+        }
+
+        return diskInfo;
     }
 
     @Override

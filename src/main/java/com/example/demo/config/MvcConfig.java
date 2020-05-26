@@ -27,7 +27,7 @@ public class MvcConfig implements WebMvcConfigurer {
         MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
         ObjectMapper objectMapper = new ObjectMapper();
 
-        objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm"));
+        objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 
         //BeanSerializerFactory
         SerializerFactory serializerFactory = objectMapper.getSerializerFactory();

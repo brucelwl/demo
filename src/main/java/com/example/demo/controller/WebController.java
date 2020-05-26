@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
 import com.example.demo.config.UserInfo;
+import com.example.demo.status.SystemInfo;
+import com.example.demo.status.SystemInfoCollector;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.format.annotation.NumberFormat;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -61,6 +63,14 @@ public class WebController {
         return "返回中文字符串abc123";
     }
 
+
+    @GetMapping("/collector")
+    public SystemInfo SystemInfoCollector(){
+        SystemInfoCollector systemInfoCollector = new SystemInfoCollector();
+        SystemInfo systemInfo = systemInfoCollector.collect();
+
+        return systemInfo;
+    }
 
     //@RequestMapping("/error")
     //public void error(Exception e){

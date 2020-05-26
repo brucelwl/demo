@@ -39,7 +39,7 @@ public class Extension {
 
         private double value;
 
-        private Map<String, String> m_dynamicAttributes = new LinkedHashMap<>();
+        private Map<String, String> dynamicAttributes = new LinkedHashMap<>();
 
         public ExtensionDetail(String id) {
             this.id = id;

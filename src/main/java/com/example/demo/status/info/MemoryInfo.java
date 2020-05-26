@@ -13,16 +13,16 @@ import java.util.List;
 @Getter
 public class MemoryInfo {
 
-    private long m_max;
+    private long max;
 
-    private long m_total;
+    private long total;
 
-    private long m_free;
+    private long free;
 
-    private long m_heapUsage;
+    private long heapUsage;
 
-    private long m_nonHeapUsage;
+    private long nonHeapUsage;
 
-    private List<GcInfo> m_gcs = new ArrayList<>();
+    private List<GcInfo> gcs = new ArrayList<>();
 
 }

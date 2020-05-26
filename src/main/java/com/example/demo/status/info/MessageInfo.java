@@ -6,9 +6,9 @@ import lombok.Setter;
 @Setter
 @Getter
 public class MessageInfo {
-    private long m_produced;
+    private long produced;
 
-    private long m_overflowed;
+    private long overflowed;
 
-    private long m_bytes;
+    private long bytes;
 }

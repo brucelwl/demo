@@ -11,20 +11,20 @@ import lombok.Setter;
 @Getter
 public class ThreadsInfo {
 
-    private int m_count;
+    private int count;
 
-    private int m_daemonCount;
+    private int daemonCount;
 
-    private int m_peekCount;
+    private int peekCount;
 
-    private int m_totalStartedCount;
+    private int totalStartedCount;
 
-    private int m_catThreadCount;
+    private int catThreadCount;
 
-    private int m_pigeonThreadCount;
+    private int pigeonThreadCount;
 
-    private int m_httpThreadCount;
+    private int httpThreadCount;
 
-    private String m_dump;
+    private String dump;
 }
 

@@ -10,24 +10,32 @@ import java.util.List;
 @Getter
 public class DiskInfo {
 
-    private List<DiskVolumeInfo> m_diskVolumes = new ArrayList<>();
+    /** 计量单位 */
+    private String unit;
+    private List<DiskVolumeInfo> diskVolumes = new ArrayList<>();
+
+    public DiskInfo(String unit) {
+        this.unit = unit;
+    }
 
     public DiskInfo addDiskVolume(DiskVolumeInfo diskVolume) {
-        m_diskVolumes.add(diskVolume);
+        diskVolumes.add(diskVolume);
         return this;
     }
 
     @Setter
     @Getter
     public static class DiskVolumeInfo {
-        private String m_id;
+        private String diskId;
 
-        private long m_total;
+        private long total;
 
-        private long m_free;
+        private long free;
 
-        private long m_usable;
+        private long usable;
 
-
+        public DiskVolumeInfo(String diskId) {
+            this.diskId = diskId;
+        }
     }
 }

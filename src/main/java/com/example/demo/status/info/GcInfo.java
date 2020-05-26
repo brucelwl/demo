@@ -6,9 +6,9 @@ import lombok.Setter;
 @Setter
 @Getter
 public class GcInfo {
-    private String m_name;
+    private String name;
 
-    private long m_count;
+    private long count;
 
-    private long m_time;
+    private long time;
 }
