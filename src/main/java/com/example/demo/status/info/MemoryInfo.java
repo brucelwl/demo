@@ -13,6 +13,8 @@ import java.util.List;
 @Getter
 public class MemoryInfo {
 
+    private String unit;
+
     private long max;
 
     private long total;
@@ -25,4 +27,12 @@ public class MemoryInfo {
 
     private List<GcInfo> gcs = new ArrayList<>();
 
+    public MemoryInfo(String unit) {
+        this.unit = unit;
+    }
+
+    public MemoryInfo addGc(GcInfo gc) {
+        gcs.add(gc);
+        return this;
+    }
 }

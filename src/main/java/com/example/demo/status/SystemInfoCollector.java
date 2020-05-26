@@ -6,9 +6,7 @@ import lombok.Setter;
 import org.springframework.util.ClassUtils;
 
 import java.io.File;
-import java.lang.management.ManagementFactory;
-import java.lang.management.OperatingSystemMXBean;
-import java.lang.management.RuntimeMXBean;
+import java.lang.management.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -160,18 +158,69 @@ public class SystemInfoCollector implements InfoCollector {
             Extension.ExtensionDetail extensionDetail = diskExtension.findOrCreateExtensionDetail(diskVolume.getDiskId() + " Free");
             extensionDetail.setValue(volume.getFreeSpace() * 1.0 / MB);
         }
-
         return diskInfo;
     }
 
     @Override
     public MemoryInfo collectMemoryInfo() {
-        return null;
+        MemoryInfo memoryInfo = new MemoryInfo("MB");
+        Runtime runtime = Runtime.getRuntime();
+
+        memoryInfo.setMax(runtime.maxMemory() / MB);
+        memoryInfo.setTotal(runtime.totalMemory() / MB);
+        memoryInfo.setFree(runtime.freeMemory() / MB);
+
+        MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
+        memoryInfo.setHeapUsage(memoryMXBean.getHeapMemoryUsage().getUsed() / MB);
+        memoryInfo.setNonHeapUsage(memoryMXBean.getNonHeapMemoryUsage().getUsed() / MB);
+
+        memoryMXBean.getHeapMemoryUsage().getCommitted();
+        memoryMXBean.getNonHeapMemoryUsage().getMax();
+
+        Extension gcExtension = systemInfo.findOrCreateExtension("GC");
+
+        List<GarbageCollectorMXBean> gcMxBeans = ManagementFactory.getGarbageCollectorMXBeans();
+        for (GarbageCollectorMXBean gcMxBean : gcMxBeans) {
+            if (gcMxBean.isValid()) {
+                String name = gcMxBean.getName();
+                long collectionCount = gcMxBean.getCollectionCount();
+                long collectionTime = gcMxBean.getCollectionTime();
+
+                GcInfo gcInfo = new GcInfo(name, collectionCount, collectionTime);
+                memoryInfo.addGc(gcInfo);
+
+                gcExtension.findOrCreateExtensionDetail(name + "Count").setValue(collectionCount);
+                gcExtension.findOrCreateExtensionDetail(name + "Time").setValue(collectionTime);
+            }
+        }
+        Extension heapUsage = systemInfo.findOrCreateExtension("JVMHeap");
+        List<MemoryPoolMXBean> memoryPoolMXBeans = ManagementFactory.getMemoryPoolMXBeans();
+        for (MemoryPoolMXBean memoryPoolMXBean : memoryPoolMXBeans) {
+            String name = memoryPoolMXBean.getName();
+            long used = memoryPoolMXBean.getUsage().getUsed();
+            heapUsage.findOrCreateExtensionDetail(name).setValue(used * 1.0 / MB);
+        }
+        return memoryInfo;
     }
 
     @Override
     public ThreadsInfo collectThreadsInfo() {
-        return null;
+        ThreadsInfo threadsInfo = new ThreadsInfo();
+
+        ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
+        threadMXBean.setThreadContentionMonitoringEnabled(true);
+        ThreadInfo[] threads;
+        if (m_dumpLocked) {
+            threads = threadMXBean.dumpAllThreads(true, true);
+        } else {
+            threads = threadMXBean.dumpAllThreads(false, false);
+        }
+        threadsInfo.setCount(threadMXBean.getThreadCount());
+        threadsInfo.setDaemonCount(threadMXBean.getDaemonThreadCount());
+        threadsInfo.setPeekCount(threadMXBean.getPeakThreadCount());
+        threadsInfo.setTotalStartedCount((int) threadMXBean.getTotalStartedThreadCount());
+
+        return threadsInfo;
     }
 
     @Override

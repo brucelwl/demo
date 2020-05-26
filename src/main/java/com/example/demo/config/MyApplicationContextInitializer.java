@@ -13,6 +13,6 @@ public class MyApplicationContextInitializer implements ApplicationContextInitia
     public void initialize(ConfigurableApplicationContext applicationContext) {
         ConfigurableListableBeanFactory beanFactory = applicationContext.getBeanFactory();
 
-       // beanFactory.ignoreDependencyInterface(IgnoreUserInfoInject.class);
+        beanFactory.ignoreDependencyInterface(IgnoreUserInfoInject.class);
     }
 }
