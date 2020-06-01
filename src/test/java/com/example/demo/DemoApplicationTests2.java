@@ -1,33 +1,25 @@
 package com.example.demo;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 public class DemoApplicationTests2 {
 
     @Test
-    public void contextLoads() throws IllegalAccessException, InstantiationException {
+    public void contextLoads() {
+        Integer integer = Integer.valueOf(15256);
 
-        ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
+        //自动排序
+        ConcurrentSkipListMap<String, String> concurrentSkipListMap = new ConcurrentSkipListMap<>();
 
-        Object o = map.putIfAbsent("aaa", "aaa");
+        concurrentSkipListMap.put("ddd", "ddd");
+        concurrentSkipListMap.put("bbb", "bbb");
+        concurrentSkipListMap.put("ccc", "ccc");
+        concurrentSkipListMap.put("aaa", "aaa");
 
-        Object aaa = map.computeIfAbsent("aaa", (key) -> "aaaa");
+        System.out.println(concurrentSkipListMap);
 
-        Object aaa1 = map.get("aaa");
-
-        System.out.println(o);
-        System.out.println(aaa);
-
-
-        //FooBar.FooBarConfig fooBarConfig = new FooBar.FooBarConfig();
-        //System.out.println(fooBarConfig);
-
-        FooBar.FooBarConfig fooBarConfig = FooBar.FooBarConfig.class.newInstance();
 
 
     }
