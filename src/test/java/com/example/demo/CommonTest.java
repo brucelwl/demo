@@ -4,18 +4,8 @@ package com.example.demo;
 import org.junit.Test;
 import org.springframework.util.Assert;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.CharBuffer;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,13 +24,21 @@ import java.util.concurrent.ThreadLocalRandom;
  * Created by bruce on 2019/11/27 20:47
  */
 public class CommonTest {
-    //static {
-    //    System.setProperty("jdk.internal.lambda.dumpProxyClasses", ".");
-    //}
+    static {
+        //System.setProperty("jdk.internal.lambda.dumpProxyClasses", ".");
+        //InitInnerClassLambdaMetafactory.init();
+    }
 
     public static void main(String[] args) throws InterruptedException, IOException, URISyntaxException {
 
-        URI pathStr = CommonTest.class.getClassLoader()
+       new Thread(() -> {
+
+           System.out.println("........");
+       }).start();
+
+       Thread.sleep(1000);
+
+        /*URI pathStr = CommonTest.class.getClassLoader()
                 .getResource("json_propertysource.json")
                 .toURI();
 
@@ -79,7 +77,7 @@ public class CommonTest {
             long lastTimestamp = m_byteBuffer.getLong();
 
             System.out.println(lastTimestamp);
-        }
+        }*/
 
     }
 

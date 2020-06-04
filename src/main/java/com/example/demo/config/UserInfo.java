@@ -1,7 +1,5 @@
 package com.example.demo.config;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.annotation.NumberFormat;
 
@@ -12,10 +10,9 @@ import java.util.List;
  * Created by bruce on 2019/8/22 16:43
  */
 @Configuration
-@ConfigurationProperties("titans.user.info")
 public class UserInfo {
 
-    private String userName;
+    //private String userName;
 
     private String password;
 
@@ -25,18 +22,18 @@ public class UserInfo {
     private Double num;
 
     // 只使用using 不会处理null的情况
-    @JsonSerialize(using = CustomerDoubleSerialize.class, nullsUsing = CustomerDoubleSerialize.class)
-    private double salary;
+    //@JsonSerialize(using = CustomerDoubleSerialize.class, nullsUsing = CustomerDoubleSerialize.class)
+    //private double salary;
 
     private Date brithDay;
 
-    public String getUserName() {
+    /*public String getUserName() {
         return userName;
     }
 
     public void setUserName(String userName) {
         this.userName = userName;
-    }
+    }*/
 
     public String getPassword() {
         return password;
@@ -62,13 +59,13 @@ public class UserInfo {
         this.num = num;
     }
 
-    public double getSalary() {
+    /*public double getSalary() {
         return salary;
     }
 
     public void setSalary(double salary) {
         this.salary = salary;
-    }
+    }*/
 
     public Date getBrithDay() {
         return brithDay;
@@ -81,11 +78,11 @@ public class UserInfo {
     @Override
     public String toString() {
         return "UserInfo{" +
-                "userName='" + userName + '\'' +
+                //"userName='" + userName + '\'' +
                 ", password='" + password + '\'' +
                 ", addresses=" + addresses +
                 ", num=" + num +
-                ", salary=" + salary +
+                //", salary=" + salary +
                 ", brithDay=" + brithDay +
                 '}';
     }

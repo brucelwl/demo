@@ -33,7 +33,7 @@ public class WebController {
     public UserInfo userInfo() {
         UserInfo userInfo = new UserInfo();
         userInfo.setNum(15.639);
-        userInfo.setSalary(15112);
+        //userInfo.setSalary(15112);
         userInfo.setBrithDay(new Date());
         return userInfo;
     }
@@ -42,8 +42,8 @@ public class WebController {
     public UserInfo userInfo2(String name) {
         UserInfo userInfo = new UserInfo();
         userInfo.setNum(15.639);
-        userInfo.setSalary(15112);
-        userInfo.setUserName(name);
+        //userInfo.setSalary(15112);
+        //userInfo.setUserName(name);
         userInfo.setBrithDay(new Date());
         return userInfo;
     }
@@ -52,8 +52,8 @@ public class WebController {
     public UserInfo userInfo3(UserInfo user) {
         UserInfo userInfo = new UserInfo();
         userInfo.setNum(user.getNum());
-        userInfo.setSalary(user.getSalary());
-        userInfo.setUserName(user.getUserName());
+        //userInfo.setSalary(user.getSalary());
+        //userInfo.setUserName(user.getUserName());
         userInfo.setBrithDay(new Date());
         return userInfo;
     }
