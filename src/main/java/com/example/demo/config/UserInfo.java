@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by bruce on 2019/8/22 16:43
  */
-@Configuration
+//@Configuration
 public class UserInfo {
 
     //private String userName;

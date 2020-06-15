@@ -20,6 +20,22 @@ import java.util.List;
 @Configuration(proxyBeanMethods = false)
 public class MvcConfig implements WebMvcConfigurer {
 
+    @Bean("userInfo")
+    public UserInfo userInfo2(){
+        UserInfo userInfo = new UserInfo();
+        userInfo.setPassword("aaa");
+        //userInfo.setUsername("aaa");
+        return userInfo;
+    }
+
+    @Bean("userInfo")
+    public UserInfo userInfo1(){
+        UserInfo userInfo = new UserInfo();
+        userInfo.setPassword("aaa");
+        //userInfo.setUsername("aaa");
+        return userInfo;
+    }
+
 
     @Bean
     public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
