@@ -25,10 +25,6 @@ public class ResolvableTypeTest {
 
         System.out.println(aClass);
 
-        boolean anyMatch = Arrays.stream(new String[]{})
-                .anyMatch((fileExtension) -> StringUtils.endsWithIgnoreCase("classpath:aa.", fileExtension));
-
-        System.out.println(anyMatch);
 
     }
 
