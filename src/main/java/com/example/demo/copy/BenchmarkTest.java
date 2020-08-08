@@ -1,5 +1,6 @@
 package com.example.demo.copy;
 
+import com.example.demo.util.BeanUtil;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Measurement;

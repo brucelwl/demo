@@ -1,4 +1,4 @@
-package com.example.demo.copy;
+package com.example.demo.util;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.cglib.beans.BeanCopier;
