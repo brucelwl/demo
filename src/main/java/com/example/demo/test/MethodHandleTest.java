@@ -22,8 +22,15 @@ public class MethodHandleTest {
         MethodHandle thinking2 = lookup2.findSpecial(GrandFather.class, "thinking", mt, Son.class);
         thinking2.invoke(son);
 
-        MethodHandle specialMethodHandle = MethodHandlesUtil.getSpecialMethodHandle(
-                GrandFather.class.getDeclaredMethod("thinking"));
+        MethodHandles.Lookup lookup3 = MethodHandlesUtil.lookup(Father.class);
+        MethodHandle thinking3 = lookup3.findSpecial(Father.class, "thinking", mt, Father.class);
+        thinking3.invoke(son);
+
+        MethodHandles.Lookup lookup4 = MethodHandlesUtil.lookup(GrandFather.class);
+        MethodHandle thinking4 = lookup4.findSpecial(GrandFather.class, "thinking", mt, GrandFather.class);
+        thinking4.invoke(son);
+
+        MethodHandle specialMethodHandle = MethodHandlesUtil.getSpecialMethodHandle(GrandFather.class.getDeclaredMethod("thinking"));
         specialMethodHandle.invoke(son);
 
         //反射调用

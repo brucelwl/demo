@@ -83,10 +83,14 @@ public class MethodHandlesUtil {
         }
     }
 
-    public static MethodHandle getSpecialMethodHandle(Method parentMethod) throws IllegalAccessException {
+    public static MethodHandle getSpecialMethodHandle(Method parentMethod) {
         final Class<?> declaringClass = parentMethod.getDeclaringClass();
         MethodHandles.Lookup lookup = lookup(declaringClass);
-        return lookup.unreflectSpecial(parentMethod, declaringClass);
+        try {
+            return lookup.unreflectSpecial(parentMethod, declaringClass);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

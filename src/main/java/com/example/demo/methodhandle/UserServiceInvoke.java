@@ -12,8 +12,6 @@ import java.lang.reflect.Proxy;
 
 public class UserServiceInvoke {
 
-    private static final int ALLOWED_MODES = MethodHandles.Lookup.PRIVATE | MethodHandles.Lookup.PROTECTED
-            | MethodHandles.Lookup.PACKAGE | MethodHandles.Lookup.PUBLIC;
 
     public static UserMapper getInstance(InvocationHandler handler) {
         return (UserMapper) Proxy.newProxyInstance(UserServiceInvoke.class.getClassLoader(),
@@ -36,18 +34,6 @@ public class UserServiceInvoke {
             e.printStackTrace();
         }
         return virtual;
-    }
-
-    public static MethodHandle getSonMethodHandle(Class<?> cl) {
-        MethodHandles.Lookup lookup = MethodHandlesUtil.lookup(cl);
-        MethodType mt = MethodType.methodType(void.class);
-        MethodHandle thinking = null;
-        try {
-            thinking = lookup.findSpecial(Son.class, "thinking", mt, Son.class);
-        } catch (NoSuchMethodException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return thinking;
     }
 
 
