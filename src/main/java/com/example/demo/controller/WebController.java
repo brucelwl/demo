@@ -1,12 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.config.UserInfo;
-import com.example.demo.status.SystemInfo;
-import com.example.demo.status.SystemInfoCollector;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.format.annotation.NumberFormat;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -64,23 +59,4 @@ public class WebController {
     }
 
 
-    @GetMapping("/collector")
-    public SystemInfo SystemInfoCollector(){
-        SystemInfoCollector systemInfoCollector = new SystemInfoCollector();
-        SystemInfo systemInfo = systemInfoCollector.collect();
-
-        return systemInfo;
-    }
-
-    //@RequestMapping("/error")
-    //public void error(Exception e){
-    //
-    //    System.out.println(e.getMessage());
-    //
-    //}
-
-    //@Override
-    //public String getErrorPath() {
-    //    return "/error";
-    //}
 }
