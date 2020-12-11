@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Properties;
@@ -31,7 +29,6 @@ public class PlatformUtil {
 
     static {
         javafxPlatform = AccessController.doPrivileged((PrivilegedAction<String>) () -> System.getProperty("javafx.platform"));
-        loadProperties();
         embedded = AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> Boolean.getBoolean("com.sun.javafx.isEmbedded"));
         embeddedType = AccessController.doPrivileged((PrivilegedAction<String>) () -> System.getProperty("embedded"));
         useEGL = AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> Boolean.getBoolean("use.egl"));
@@ -186,72 +183,6 @@ public class PlatformUtil {
                     "Warning: No settings found for javafx.platform='"
                             + javafxPlatform + "'");
         }
-    }
-
-    /** Returns the directory containing the JavaFX runtime, or null
-     * if the directory cannot be located
-     */
-    private static File getRTDir() {
-        try {
-            String theClassFile = "PlatformUtil.class";
-            Class theClass = com.sun.javafx.PlatformUtil.class;
-            URL url = theClass.getResource(theClassFile);
-            if (url == null) return null;
-            String classUrlString = url.toString();
-            if (!classUrlString.startsWith("jar:file:")
-                    || classUrlString.indexOf('!') == -1) {
-                return null;
-            }
-            // Strip out the "jar:" and everything after and including the "!"
-            String s = classUrlString.substring(4,
-                    classUrlString.lastIndexOf('!'));
-            // Strip everything after the last "/" or "\" to get rid of the jar filename
-            int lastIndexOfSlash = Math.max(
-                    s.lastIndexOf('/'), s.lastIndexOf('\\'));
-            return new File(new URL(s.substring(0, lastIndexOfSlash + 1)).getPath())
-                    .getParentFile();
-        } catch (MalformedURLException e) {
-            return null;
-        }
-    }
-
-    private static void loadProperties() {
-        final String vmname = System.getProperty("java.vm.name");
-        final String arch = System.getProperty("os.arch");
-
-        if (! (javafxPlatform != null ||
-                (arch != null && arch.equals("arm")) ||
-                (vmname != null && vmname.indexOf("Embedded") > 0))) {
-            return;
-        }
-        AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
-            final File rtDir = getRTDir();
-            final String propertyFilename = "javafx.platform.properties";
-            File rtProperties = new File(rtDir, propertyFilename);
-            // First look for javafx.platform.properties in the JavaFX runtime
-            // Then in the installation directory of the JRE
-            if (rtProperties.exists()) {
-                loadPropertiesFromFile(rtProperties);
-                return null;
-            }
-            String javaHome = System.getProperty("java.home");
-            File javaHomeProperties = new File(javaHome,
-                    "lib" + File.separator
-                            + propertyFilename);
-            if (javaHomeProperties.exists()) {
-                loadPropertiesFromFile(javaHomeProperties);
-                return null;
-            }
-
-            String javafxRuntimePath = System.getProperty("javafx.runtime.path");
-            File javafxRuntimePathProperties = new File(javafxRuntimePath,
-                    File.separator + propertyFilename);
-            if (javafxRuntimePathProperties.exists()) {
-                loadPropertiesFromFile(javafxRuntimePathProperties);
-                return null;
-            }
-            return null;
-        });
     }
 
     public static boolean isAndroid() {
