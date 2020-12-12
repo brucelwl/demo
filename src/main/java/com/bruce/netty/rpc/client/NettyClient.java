@@ -1,8 +1,8 @@
 package com.bruce.netty.rpc.client;
 
 
-import com.bruce.netty.rpc.handler.codec.HeaderBodyStringDecoder;
-import com.bruce.netty.rpc.handler.codec.HeaderBodyStringEncoder;
+import com.bruce.netty.rpc.entity.UserInfo;
+import com.bruce.netty.rpc.handler.codec.MarshallingCodeFactory;
 import com.bruce.util.PlatformUtil;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -14,9 +14,9 @@ import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import lombok.extern.slf4j.Slf4j;
 
-import java.util.UUID;
-
+@Slf4j
 public class NettyClient {
     static {
         System.setProperty("io.netty.leakDetection.level", "PARANOID");
@@ -39,21 +39,15 @@ public class NettyClient {
 
             for (int i = 0; i < 200; i++) {
                 Thread.sleep(3000);
+
+                UserInfo userInfo = new UserInfo();
+                userInfo.setAge(18 + i);
+                userInfo.setUsername("bruce");
+
+                log.info("send user info");
+
                 //连接成功后发送数据
-                channelFuture.channel().writeAndFlush("随机数:" + i + " " + UUID.randomUUID().toString()
-                        +"随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机" +
-                        "数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机" +
-                        "数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机" +
-                        "数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机" +
-                        "数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机" +
-                        "数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机" +
-                        "数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机" +
-                        "数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机" +
-                        "数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机" +
-                        "数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机" +
-                        "数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机" +
-                        "数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机数随机" +
-                        "数随机数随机数随机数随机数随机数数随机数随机数随机数随机数随机数数随机数随机数随机数随机数随机数数随机数随机");
+                channelFuture.channel().writeAndFlush(userInfo);
             }
 
             channelFuture.channel().closeFuture().sync();
@@ -72,13 +66,11 @@ public class NettyClient {
         @Override
         protected void initChannel(SocketChannel ch) throws Exception {
             ChannelPipeline pipeline = ch.pipeline();
-            pipeline.addLast(new HeaderBodyStringDecoder());
-            pipeline.addLast(new HeaderBodyStringEncoder());
+            pipeline.addLast(MarshallingCodeFactory.buildMarshallingDecoder());
+            pipeline.addLast(MarshallingCodeFactory.buildMarshallingEncoder());
             pipeline.addLast(new SimpleClientHandler());
         }
     }
-
-
 
 
 }

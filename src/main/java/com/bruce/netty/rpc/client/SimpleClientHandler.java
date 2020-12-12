@@ -9,7 +9,7 @@ public class SimpleClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        //log.info("client receive:{}", msg);
+        log.info("client receive:{}", msg);
     }
 
     @Override

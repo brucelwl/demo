@@ -1,7 +1,6 @@
 package com.bruce.netty.rpc.server;
 
-import com.bruce.netty.rpc.handler.codec.HeaderBodyStringEncoder;
-import com.bruce.netty.rpc.handler.codec.HeaderBodyStringReplayingDecoder;
+import com.bruce.netty.rpc.handler.codec.MarshallingCodeFactory;
 import com.bruce.util.PlatformUtil;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.AdaptiveRecvByteBufAllocator;
@@ -78,9 +77,8 @@ public class NettyServer {
         @Override
         protected void initChannel(SocketChannel ch) throws Exception {
             ChannelPipeline pipeline = ch.pipeline();
-            pipeline.addLast(new PrintReadDataInfoHandler());
-            pipeline.addLast(new HeaderBodyStringReplayingDecoder());
-            pipeline.addLast(new HeaderBodyStringEncoder());
+            pipeline.addLast(MarshallingCodeFactory.buildMarshallingDecoder());
+            pipeline.addLast(MarshallingCodeFactory.buildMarshallingEncoder());
             pipeline.addLast(new SimpleServerHandler());
         }
     }

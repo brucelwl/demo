@@ -18,6 +18,8 @@ public class SimpleServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 
+        log.info("server channelRead:{}", msg);
+
         ctx.channel().writeAndFlush("hello netty");
         // ctx.channel().close();
 
