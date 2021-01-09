@@ -21,10 +21,10 @@ SpringBoot打成jar包后,真正的jar启动类是{@link JarLauncher},
 #### 查看远程调试命令
 java -agentlib:jdwp=help
 
-#### 远程调试命令
+#### 远程调试应用启动命令
 java -agentlib:jdwp=transport=dt_socket,server=y,address=5005 -jar demo.jar
 
 #### 远程调试
-1. 应用打成jar包,通过***远程调试命令***启动应用
+1. 应用打成jar包,通过***远程调试应用启动命令***启动应用
 2. idea中创建remote,设置远程连接参数,见图片springboot-loader-debug.png
 3. 运行remote调试
