@@ -1,6 +1,18 @@
 package com.bruce.netty.rpc.entity;
 
-public class UserInfo {
+import java.io.Serializable;
+
+public class UserInfo implements Serializable {
+
+    private static final long serialVersionUID = 6271330872494117382L;
+
+    public UserInfo() {
+    }
+
+    public UserInfo(String username, int age) {
+        this.username = username;
+        this.age = age;
+    }
 
     private String username;
 
@@ -20,5 +32,13 @@ public class UserInfo {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return "UserInfo{" +
+                "username='" + username + '\'' +
+                ", age=" + age +
+                '}';
     }
 }

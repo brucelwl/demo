@@ -1,74 +1,139 @@
 package com.bruce.netty.rpc.client;
 
 
-import com.bruce.netty.rpc.entity.UserInfo;
 import com.bruce.netty.rpc.handler.codec.MarshallingCodeFactory;
-import com.bruce.util.PlatformUtil;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.epoll.EpollEventLoopGroup;
-import io.netty.channel.epoll.EpollSocketChannel;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import lombok.extern.slf4j.Slf4j;
+import io.netty.handler.timeout.IdleStateHandler;
+import io.netty.util.internal.logging.InternalLogger;
+import io.netty.util.internal.logging.InternalLoggerFactory;
 
-@Slf4j
+import java.net.ConnectException;
+import java.nio.channels.ClosedChannelException;
+import java.util.concurrent.TimeUnit;
+
+
 public class NettyClient {
-    static {
-        System.setProperty("io.netty.leakDetection.level", "PARANOID");
-    }
+    private static final InternalLogger log = InternalLoggerFactory.getInstance(NettyClient.class);
 
-    public static void main(String[] args) {
+    private EventLoopGroup workerGroup;
+    private Bootstrap bootstrap;
+    private volatile Channel clientChannel;
 
-        EventLoopGroup workerGroup = PlatformUtil.isLinux() ? new EpollEventLoopGroup() : new NioEventLoopGroup();
-        Class<? extends SocketChannel> socketChannelClass = PlatformUtil.isLinux() ? EpollSocketChannel.class : NioSocketChannel.class;
+    public NettyClient(int threads) {
 
-        Bootstrap bootstrap = new Bootstrap();
+        workerGroup = new NioEventLoopGroup(threads);
+        Class<? extends SocketChannel> socketChannelClass = NioSocketChannel.class;
+
+        bootstrap = new Bootstrap();
         bootstrap.group(workerGroup)
                 .channel(socketChannelClass)
-                //.option(, )
-                //.handler(new ClientHandlerChannelInitializer());
-                .handler(new CustomCodecChannelInitializer());
+                .option(ChannelOption.TCP_NODELAY, true)
+                .option(ChannelOption.SO_KEEPALIVE, false)
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 30000)
+                .handler(new ClientHandlerInitializer(this));
+    }
 
+    public boolean connect() {
+        log.info("尝试连接到服务端: 127.0.0.1:8088");
         try {
-            ChannelFuture channelFuture = bootstrap.connect("127.0.0.1", 8088).sync();
+            ChannelFuture channelFuture = bootstrap.connect("127.0.0.1", 8088);
 
-            for (int i = 0; i < 200; i++) {
-                Thread.sleep(3000);
-
-                UserInfo userInfo = new UserInfo();
-                userInfo.setAge(18 + i);
-                userInfo.setUsername("bruce");
-
-                log.info("send user info");
-
-                //连接成功后发送数据
-                channelFuture.channel().writeAndFlush(userInfo);
+            boolean notTimeout = channelFuture.awaitUninterruptibly(30, TimeUnit.SECONDS);
+            clientChannel = channelFuture.channel();
+            if (notTimeout) {
+                if (clientChannel != null && clientChannel.isActive()) {
+                    log.info("ZSKeeper client started !!! {} connect to server", clientChannel.localAddress());
+                    return true;
+                }
+                Throwable cause = channelFuture.cause();
+                if (cause != null) {
+                    exceptionHandler(cause);
+                }
+            } else {
+                log.warn("connect remote host[{}] timeout {}s", clientChannel.remoteAddress(), 30);
             }
-
-            channelFuture.channel().closeFuture().sync();
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-            workerGroup.shutdownGracefully();
+            clientChannel.close();
+            return false;
+        } catch (Exception e) {
+            exceptionHandler(e);
+            clientChannel.close();
+            return false;
         }
+    }
+
+    public void connectAsync() {
+        log.info("尝试连接到服务端: 127.0.0.1:8088");
+        ChannelFuture channelFuture = bootstrap.connect("127.0.0.1", 8088);
+        boolean notTimeout = channelFuture.awaitUninterruptibly(30, TimeUnit.SECONDS);
+        channelFuture.addListener((ChannelFutureListener) future -> {
+            Throwable cause = future.cause();
+            if (cause != null) {
+                exceptionHandler(cause);
+                // ScheduledFuture<?> scheduledFuture = channelFuture.channel().eventLoop().schedule((Runnable) NettyClient.this::connectAsync, 2, TimeUnit.SECONDS);
+                // while (!scheduledFuture.isDone()){
+                //     scheduledFuture.await(20);
+                // }
+                // Throwable cause1 = scheduledFuture.cause();
+                // if (cause1 != null){
+                //     cause1.printStackTrace();
+                // }
+                future.channel().pipeline().fireChannelInactive();
+            } else {
+                clientChannel = channelFuture.channel();
+                if (clientChannel != null && clientChannel.isActive()) {
+                    log.info("ZSKeeper client started !!! {} connect to server", clientChannel.localAddress());
+                }
+            }
+        });
+
+
 
     }
 
 
-    static class CustomCodecChannelInitializer extends ChannelInitializer<SocketChannel> {
+    private void exceptionHandler(Throwable cause) {
+        if (cause instanceof ConnectException) {
+            log.error("连接异常:{}", cause.getMessage());
+        } else if (cause instanceof ClosedChannelException) {
+            log.error("connect error:{}", "client has destroy");
+        } else {
+            log.error("connect error:", cause);
+        }
+    }
+
+    public void close() {
+        if (clientChannel != null) {
+            clientChannel.close();
+        }
+        if (workerGroup != null) {
+            workerGroup.shutdownGracefully();
+        }
+    }
+
+    public Channel getChannel() {
+        return clientChannel;
+    }
+
+    static class ClientHandlerInitializer extends ChannelInitializer<SocketChannel> {
+
+        private NettyClient client;
+
+        public ClientHandlerInitializer(NettyClient client) {
+            this.client = client;
+        }
 
         @Override
         protected void initChannel(SocketChannel ch) throws Exception {
             ChannelPipeline pipeline = ch.pipeline();
             pipeline.addLast(MarshallingCodeFactory.buildMarshallingDecoder());
             pipeline.addLast(MarshallingCodeFactory.buildMarshallingEncoder());
-            pipeline.addLast(new SimpleClientHandler());
+            pipeline.addLast(new IdleStateHandler(25, 0, 10));
+            pipeline.addLast(new ClientHeartbeatHandler());
+            pipeline.addLast(new SimpleClientHandler(client));
         }
     }
 
