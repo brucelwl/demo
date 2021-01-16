@@ -33,9 +33,9 @@ public class SimpleClientHandler extends ChannelInboundHandlerAdapter {
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         log.warn("channelInactive:{}", ctx.channel().localAddress());
 
-        //reconnection(ctx);
+        reconnection(ctx);
 
-        reconnectionAsync(ctx);
+        //reconnectionAsync(ctx);
     }
 
     /** 入栈发生异常时执行exceptionCaught */
@@ -47,46 +47,44 @@ public class SimpleClientHandler extends ChannelInboundHandlerAdapter {
             log.error(cause);
         }
 
-        //reconnection(ctx);
+        reconnection(ctx);
     }
 
 
     private void reconnection(ChannelHandlerContext ctx) {
         log.info("5s之后重新建立连接");
-        ctx.channel().eventLoop().schedule(new Runnable() {
-            @Override
-            public void run() {
-                boolean connect = client.connect();
-                if (connect) {
-                    log.info("重新连接成功");
-                } else {
-                    reconnection(ctx);
-                }
-            }
-        }, 3, TimeUnit.SECONDS);
+        // ScheduledFuture<?> scheduledFuture = ctx.channel().eventLoop().schedule(new Runnable() {
+        //     @Override
+        //     public void run() {
+        //         boolean connect = client.connect();
+        //         if (connect) {
+        //             log.info("重新连接成功");
+        //         } else {
+        //             reconnection(ctx);
+        //         }
+        //     }
+        // }, 3, TimeUnit.SECONDS);
+        //
+        // scheduledFuture.addListener(new GenericFutureListener() {
+        //     @Override
+        //     public void operationComplete(Future future) throws Exception {
+        //         Throwable cause = future.cause();
+        //         if (cause != null) {
+        //             cause.printStackTrace();
+        //         }
+        //     }
+        // });
+
     }
 
     private void reconnectionAsync(ChannelHandlerContext ctx) {
         log.info("5s之后重新建立连接");
-        ScheduledFuture<?> schedule = ctx.channel().eventLoop().schedule(new Runnable() {
+        ctx.channel().eventLoop().schedule(new Runnable() {
             @Override
             public void run() {
                 client.connectAsync();
             }
         }, 5, TimeUnit.SECONDS);
-
-        schedule.addListener(new GenericFutureListener() {
-            @Override
-            public void operationComplete(Future future) throws Exception {
-                Throwable cause = future.cause();
-                if (cause != null) {
-                    cause.printStackTrace();
-                    client.connectAsync();
-                } else {
-                    log.info(".........");
-                }
-            }
-        });
 
     }
 

@@ -1,5 +1,7 @@
 package com.bruce.test;
 
+import java.util.concurrent.LinkedBlockingQueue;
+
 /**
  * Created by bruce on 2021/1/11 9:47
  */
@@ -7,18 +9,14 @@ public class Test {
 
     public static void main(String[] args) throws InterruptedException {
 
-        Parent parent = new Parent();
-        Parent.Inner inner = parent.newInner();
+        LinkedBlockingQueue<String> queue = new LinkedBlockingQueue<>(10);
+        queue.offer("aaa");
+        queue.offer("bbb");
+        queue.offer("ccc");
 
-        parent.setAnInt(256);
-        System.out.println(inner.getAnInt());
-        System.out.println(parent.getAnInt());
-
-        Thread.sleep(5000);
-
-        inner.set(789);
-        System.out.println(inner.getAnInt());
-        System.out.println(parent.getAnInt());
+        for (String s : queue) {
+            System.out.println(queue.poll());
+        }
 
     }
 }

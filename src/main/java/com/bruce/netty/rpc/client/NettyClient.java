@@ -23,9 +23,13 @@ public class NettyClient {
     private Bootstrap bootstrap;
     private volatile Channel clientChannel;
 
-    public NettyClient(int threads) {
+    public NettyClient() {
+        this(-1);
+    }
 
-        workerGroup = new NioEventLoopGroup(threads);
+    public NettyClient(int threads) {
+        workerGroup = threads > 0 ? new NioEventLoopGroup(threads) : new NioEventLoopGroup();
+
         Class<? extends SocketChannel> socketChannelClass = NioSocketChannel.class;
 
         bootstrap = new Bootstrap();
@@ -33,7 +37,7 @@ public class NettyClient {
                 .channel(socketChannelClass)
                 .option(ChannelOption.TCP_NODELAY, true)
                 .option(ChannelOption.SO_KEEPALIVE, false)
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 30000)
+                //.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 30000)
                 .handler(new ClientHandlerInitializer(this));
     }
 
@@ -42,7 +46,7 @@ public class NettyClient {
         try {
             ChannelFuture channelFuture = bootstrap.connect("127.0.0.1", 8088);
 
-            boolean notTimeout = channelFuture.awaitUninterruptibly(30, TimeUnit.SECONDS);
+            boolean notTimeout = channelFuture.awaitUninterruptibly(20, TimeUnit.SECONDS);
             clientChannel = channelFuture.channel();
             if (notTimeout) {
                 if (clientChannel != null && clientChannel.isActive()) {
@@ -56,31 +60,24 @@ public class NettyClient {
             } else {
                 log.warn("connect remote host[{}] timeout {}s", clientChannel.remoteAddress(), 30);
             }
-            clientChannel.close();
-            return false;
         } catch (Exception e) {
             exceptionHandler(e);
-            clientChannel.close();
-            return false;
         }
+        clientChannel.close();
+        return false;
     }
 
     public void connectAsync() {
         log.info("尝试连接到服务端: 127.0.0.1:8088");
         ChannelFuture channelFuture = bootstrap.connect("127.0.0.1", 8088);
-        boolean notTimeout = channelFuture.awaitUninterruptibly(30, TimeUnit.SECONDS);
+
+        boolean notTimeout = channelFuture.awaitUninterruptibly(20, TimeUnit.SECONDS);
+
         channelFuture.addListener((ChannelFutureListener) future -> {
             Throwable cause = future.cause();
             if (cause != null) {
                 exceptionHandler(cause);
-                // ScheduledFuture<?> scheduledFuture = channelFuture.channel().eventLoop().schedule((Runnable) NettyClient.this::connectAsync, 2, TimeUnit.SECONDS);
-                // while (!scheduledFuture.isDone()){
-                //     scheduledFuture.await(20);
-                // }
-                // Throwable cause1 = scheduledFuture.cause();
-                // if (cause1 != null){
-                //     cause1.printStackTrace();
-                // }
+                log.info("触发fireChannelInactive事件");
                 future.channel().pipeline().fireChannelInactive();
             } else {
                 clientChannel = channelFuture.channel();
@@ -89,9 +86,6 @@ public class NettyClient {
                 }
             }
         });
-
-
-
     }
 
 
@@ -119,6 +113,7 @@ public class NettyClient {
     }
 
     static class ClientHandlerInitializer extends ChannelInitializer<SocketChannel> {
+        private static final InternalLogger log = InternalLoggerFactory.getInstance(NettyClient.class);
 
         private NettyClient client;
 
@@ -128,6 +123,8 @@ public class NettyClient {
 
         @Override
         protected void initChannel(SocketChannel ch) throws Exception {
+            //log.info("ClientHandlerInitializer initChannel");
+
             ChannelPipeline pipeline = ch.pipeline();
             pipeline.addLast(MarshallingCodeFactory.buildMarshallingDecoder());
             pipeline.addLast(MarshallingCodeFactory.buildMarshallingEncoder());

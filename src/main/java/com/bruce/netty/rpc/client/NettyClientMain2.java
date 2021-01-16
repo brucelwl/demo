@@ -15,7 +15,7 @@ public class NettyClientMain2 {
     private static final ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
 
     public static void main(String[] args) {
-        NettyClient nettyClient = new NettyClient(4);
+        NettyClient nettyClient = new NettyClient(1);
         nettyClient.connectAsync();
 
         send(nettyClient);

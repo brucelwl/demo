@@ -26,17 +26,15 @@ import org.jboss.marshalling.MarshallingConfiguration;
  */
 public final class MarshallingCodeFactory {
 
-
-
     /** 创建Jboss marshalling 解码器 */
-    public static MyMarshallingDecoder buildMarshallingDecoder() {
+    public static MarshallingDecoder buildMarshallingDecoder() {
         //参数serial表示创建的是Java序列化工厂对象,由jboss-marshalling-serial提供
         MarshallerFactory factory = Marshalling.getProvidedMarshallerFactory("serial");
         MarshallingConfiguration configuration = new MarshallingConfiguration();
         configuration.setVersion(5);
         DefaultUnmarshallerProvider provider = new DefaultUnmarshallerProvider(factory, configuration);
 
-        return new MyMarshallingDecoder(provider, 1024);
+        return new MarshallingDecoder(provider, 1024);
     }
 
     /** 创建Jboss marshalling 编码器 */
@@ -47,20 +45,5 @@ public final class MarshallingCodeFactory {
         DefaultMarshallerProvider provider = new DefaultMarshallerProvider(factory, configuration);
         return new MarshallingEncoder(provider);
     }
-
-    public static class MyMarshallingDecoder extends MarshallingDecoder {
-        private static final InternalLogger log = InternalLoggerFactory.getInstance(MyMarshallingDecoder.class);
-
-        public MyMarshallingDecoder(UnmarshallerProvider provider, int maxObjectSize) {
-            super(provider, maxObjectSize);
-        }
-
-        @Override
-        protected Object decode(ChannelHandlerContext ctx, ByteBuf in) throws Exception {
-            //log.info("读取数据长度:{}", in.readableBytes());
-            return super.decode(ctx, in);
-        }
-    }
-
 
 }

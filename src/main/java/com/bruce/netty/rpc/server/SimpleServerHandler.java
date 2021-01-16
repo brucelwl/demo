@@ -26,11 +26,7 @@ public class SimpleServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         log.info("server channelRead:{}", msg);
-        if (msg.equals("ping")) {
-            ctx.channel().writeAndFlush("pong");
-        } else {
-            ctx.channel().writeAndFlush("hello netty");
-        }
+        ctx.channel().writeAndFlush("hello netty");
     }
 
     @Override
