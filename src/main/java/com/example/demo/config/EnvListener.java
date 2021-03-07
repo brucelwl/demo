@@ -13,10 +13,6 @@ public class EnvListener implements ApplicationListener<ApplicationEnvironmentPr
 
     @Override
     public void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {
-
-        logger.info("EnvListener");
-
-        logger.info("pid:{}", event.getEnvironment().getProperty("PID"));
-
+        logger.info("EnvListener pid:{}", event.getEnvironment().getProperty("PID"));
     }
 }

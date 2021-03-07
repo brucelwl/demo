@@ -1,6 +1,5 @@
 package com.example.demo.config;
 
-import org.springframework.context.annotation.Configuration;
 import org.springframework.format.annotation.NumberFormat;
 
 import java.util.Date;
@@ -9,7 +8,6 @@ import java.util.List;
 /**
  * Created by bruce on 2019/8/22 16:43
  */
-//@Configuration
 public class UserInfo {
 
     //private String userName;

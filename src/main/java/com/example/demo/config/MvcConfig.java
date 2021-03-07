@@ -1,16 +1,9 @@
 package com.example.demo.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.cfg.SerializerFactoryConfig;
-import com.fasterxml.jackson.databind.ser.BeanSerializerFactory;
-import com.fasterxml.jackson.databind.ser.SerializerFactory;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,44 +12,6 @@ import java.util.List;
  */
 @Configuration(proxyBeanMethods = false)
 public class MvcConfig implements WebMvcConfigurer {
-
-    @Bean("userInfo")
-    public UserInfo userInfo2(){
-        UserInfo userInfo = new UserInfo();
-        userInfo.setPassword("aaa");
-        //userInfo.setUsername("aaa");
-        return userInfo;
-    }
-
-    @Bean("userInfo")
-    public UserInfo userInfo1(){
-        UserInfo userInfo = new UserInfo();
-        userInfo.setPassword("aaa");
-        //userInfo.setUsername("aaa");
-        return userInfo;
-    }
-
-
-    @Bean
-    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
-
-        MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
-
-        //BeanSerializerFactory
-        SerializerFactory serializerFactory = objectMapper.getSerializerFactory();
-
-        SerializerFactoryConfig serializerFactoryConfig = new SerializerFactoryConfig();
-
-        objectMapper.setSerializerFactory(new MyBeanSerializerFactory(serializerFactoryConfig));
-
-        mappingJackson2HttpMessageConverter.setObjectMapper(objectMapper);
-
-        return mappingJackson2HttpMessageConverter;
-    }
-
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {

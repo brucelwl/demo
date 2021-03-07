@@ -1,7 +1,5 @@
 package com.example.demo.status.info;
 
-import com.example.demo.config.UseDefaultJsonSer;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,7 +26,6 @@ public class OsInfo {
     private long processCpuTime;
 
     /** 当前Java进程CPU负载 */
-    @UseDefaultJsonSer
     private double processCpuLoad;
 
     /** 以字节为单位的物理内存总量。 */

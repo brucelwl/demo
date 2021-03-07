@@ -4,11 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.http.HttpMessageConvertersAutoConfiguration;
 import org.springframework.boot.loader.ExecutableArchiveLauncher;
 import org.springframework.boot.loader.JarLauncher;
 import org.springframework.boot.loader.MainMethodRunner;
 import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ConfigurableApplicationContext;
 
 /**
@@ -23,6 +23,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 //@EnableGitConfig(address = "http://localhost:454ranch = "dev")
 //@SpringBootApplication(exclude = {HttpMessageConvertersAutoConfiguration.class})
 @SpringBootApplication
+@EnableCaching
 public class DemoApplication {
     private static final Logger logger = LoggerFactory.getLogger(DemoApplication.class);
 
