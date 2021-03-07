@@ -3,9 +3,6 @@ package com.example.demo;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.GenericTypeResolver;
 import org.springframework.core.ResolvableType;
-import org.springframework.util.StringUtils;
-
-import java.util.Arrays;
 
 /**
  * Created by bruce on 2019/11/27 9:30

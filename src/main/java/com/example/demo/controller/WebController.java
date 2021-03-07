@@ -3,8 +3,6 @@ package com.example.demo.controller;
 import com.example.demo.config.UserInfo;
 import com.example.demo.status.SystemInfo;
 import com.example.demo.status.SystemInfoCollector;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,11 +14,9 @@ import java.util.Date;
 /**
  * Created by bruce on 2019/9/11 14:23
  */
-@CacheConfig(cacheNames = "aa")
 @RestController
 public class WebController {
 
-    @Cacheable
     @GetMapping("/index")
     public void index(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // int a = 10 / 0;
