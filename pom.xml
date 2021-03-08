@@ -20,7 +20,7 @@
 
     <pluginRepositories>
         <pluginRepository>
-            <id>repository.spring.release</id>
+            <id>spring.release</id>
             <name>Spring GA Repository</name>
             <url>https://repo.spring.io/plugins-release/</url>
         </pluginRepository>
@@ -28,13 +28,13 @@
 
     <repositories>
         <repository>
-            <id>repository.spring.milestone</id>
+            <id>spring.release</id>
             <name>Spring Release Repository</name>
             <url>https://repo.spring.io/release</url>
         </repository>
 
         <repository>
-            <id>repository.spring.milestone</id>
+            <id>spring.milestone</id>
             <name>Spring Milestone Repository</name>
             <url>https://repo.spring.io/milestone</url>
         </repository>
