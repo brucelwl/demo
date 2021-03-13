@@ -8,8 +8,8 @@ import org.springframework.boot.loader.ExecutableArchiveLauncher;
 import org.springframework.boot.loader.JarLauncher;
 import org.springframework.boot.loader.MainMethodRunner;
 import org.springframework.boot.web.servlet.ServletComponentScan;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.env.ConfigurableEnvironment;
 
 /**
  * SpringBoot打成jar包后,真正的jar启动类是{@link JarLauncher},
@@ -23,13 +23,14 @@ import org.springframework.context.ConfigurableApplicationContext;
 //@EnableGitConfig(address = "http://localhost:454ranch = "dev")
 //@SpringBootApplication(exclude = {HttpMessageConvertersAutoConfiguration.class})
 @SpringBootApplication
-@EnableCaching
 public class DemoApplication {
     private static final Logger logger = LoggerFactory.getLogger(DemoApplication.class);
 
     public static void main(String[] args) throws Exception {
         ConfigurableApplicationContext context = SpringApplication.run(DemoApplication.class, args);
 
+        ConfigurableEnvironment environment = context.getEnvironment();
+        String aaa = environment.getProperty("aaa");
 
     }
 
